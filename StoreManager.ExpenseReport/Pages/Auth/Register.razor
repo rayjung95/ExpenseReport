@@ -1,0 +1,101 @@
+﻿@page "/auth/register"
+@layout AuthLayout
+@using StoreManager.Shared.Models
+
+@inject AuthenticationService authService
+@inject NavigationManager navigationManager
+
+<div class="row">
+    <div class="col-12">
+        <h2>Create a new account</h2>
+        <EditForm Model="model" OnValidSubmit="RegisterUser">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <RadzenCard>
+                @*@if(!string.IsNullOrWhiteSpace(message))
+                    {
+                        <div class="alert alert-info">@message</div>
+                    }*@
+                <AlertMessage Message="@message" MessageType="@messageType" />
+                <label>First Name</label>
+                <RadzenTextBox @bind-Value="model.FirstName">
+
+                </RadzenTextBox>
+
+                <label>Last Name</label>
+                <RadzenTextBox @bind-Value="model.LastName">
+
+                </RadzenTextBox>
+
+                <label>Emaill</label>
+                <RadzenTextBox @bind-Value="model.Email">
+
+                </RadzenTextBox>
+
+                <label>Password</label>
+                <RadzenTextBox @bind-Value="model.Password">
+
+                </RadzenTextBox>
+
+                <label>Confrim Password</label>
+                <RadzenTextBox @bind-Value="model.ConfirmPassword">
+
+                </RadzenTextBox>
+
+                <hr />
+
+                <RadzenButton ButtonType="Radzen.ButtonType.Submit"
+                              Text="Register"
+                              ButtonStyle="Radzen.ButtonStyle.Primary"
+                              Disabled="isBusy"
+                              class="btn-block mr-2" />
+                <RadzenButton ButtonType="Radzen.ButtonType.Button"
+                              Text="Login"
+                              ButtonStyle="Radzen.ButtonStyle.Secondary"
+                              Disabled="isBusy"
+                              class="btn-block mr-2" Click="GoToLogin" />
+
+            </RadzenCard>
+
+
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    RegisterRequest model = new RegisterRequest();
+
+
+    bool isBusy = false;
+    string message = string.Empty;
+
+    Models.AlertMessageType messageType = Models.AlertMessageType.Success;
+
+    public async Task RegisterUser()
+    {
+        isBusy = true;
+
+        var result = await authService.RegisterUserAsync(model);
+        if (result.IsSuccess)
+        {
+            message = result.Message;
+            messageType = Models.AlertMessageType.Success;
+        }
+        else
+        {
+
+            message = string.Join("\n", result.Errors);
+            messageType = Models.AlertMessageType.Error;
+
+        }
+
+
+        isBusy = false;
+
+    }
+
+    void GoToLogin()
+    {
+        navigationManager.NavigateTo("/auth/login");
+    }
+}
