@@ -21,12 +21,12 @@ namespace StoreManager.Shared.Services
 
         public async Task<UserManagerResponse> RegisterUserAsync(RegisterRequest request)
         {
-            var response = await client.PostAsync<UserManagerResponse>($"{_baseUrl}/api/auth/register", request);
+            var response = await client.PostAsync<UserManagerResponse>($"{_baseUrl}/api/identity/register", request);
             return response.Result;
         }
         public async Task<UserManagerResponse> LoginUserAsync(LoginRequest request)
         {
-            var response = await client.PostAsync<UserManagerResponse>($"{_baseUrl}/api/auth/login", request);
+            var response = await client.PostAsync<UserManagerResponse>($"{_baseUrl}/api/identity/token", request);
             return response.Result;
         }
         

@@ -32,7 +32,7 @@ namespace StoreManager.ExpenseReport
                     new Claim("FirstName", userInfo.FirstName),
                     new Claim("LastName", userInfo.LastName),
                     new Claim("AccessToken", userInfo.AccessToken),
-                    new Claim(ClaimTypes.NameIdentifier, userInfo.Id),
+                    new Claim("Id", userInfo.Id),
                 };
 
                 var identity = new ClaimsIdentity(claims, "BearerToken");

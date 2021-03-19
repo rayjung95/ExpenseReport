@@ -21,6 +21,10 @@ namespace StoreManager.Shared.Models
         public string LastName { get; set; }
 
         [Required]
+        [StringLength(25)]
+        public string UserName { get; set; }
+
+        [Required]
         [StringLength(50)]
         public string Password { get; set; }
 
