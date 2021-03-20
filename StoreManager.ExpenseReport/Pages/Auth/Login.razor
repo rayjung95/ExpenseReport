@@ -1,0 +1,153 @@
+﻿@page "/auth/login"
+@layout AuthLayout
+@using StoreManager.Shared.Models
+
+@inject AuthenticationService authService
+@inject NavigationManager navigationManager
+@inject ILocalStorageService storageService
+@inject AuthenticationStateProvider authenticationStateProvider
+
+
+<div class="container">
+
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
+
+        <div class="col-xl-10 col-lg-12 col-md-9">
+
+            <div class="card o-hidden border-0 my-5">
+                <div class="card-body p-0">
+                    <!-- Nested Row within Card Body -->
+                    <div class="row">
+                        <div class="col-lg-6 d-none d-lg-block" style=" background: url('/images/bg-login.jpg');background-position: center;background-size: cover;"></div>
+                        <div class="col-lg-6">
+                            <div style="padding:10rem 3rem 10rem 3rem !important;">
+                                <div class="text-center">
+                                    <h1 class="h4 text-gray-900 mb-4">LOGIN !!!!</h1>
+                                </div>
+                                <EditForm Model="model" OnValidSubmit="LoginUser">
+
+                                    <DataAnnotationsValidator />
+                                    <ValidationSummary />
+                                    <RadzenCard>
+
+                                        @*<ul>
+                                            @foreach (var item in userInfo)
+                                            {
+                                                <li>
+                                                    @item.Key : @item.Value
+                                                </li>
+
+                                            }
+                                            </ul>*@
+                                        <AlertMessage Message="@message" MessageType="@messageType" />
+
+                                        <label>Emaill</label>
+                                        <RadzenTextBox @bind-Value="model.Email">
+
+                                        </RadzenTextBox>
+
+                                        <label>Password</label>
+                                        <RadzenTextBox @bind-Value="model.Password">
+
+                                        </RadzenTextBox>
+
+                                        <hr />
+
+                                        <RadzenButton ButtonType="Radzen.ButtonType.Submit"
+                                                      Text="Login"
+                                                      ButtonStyle="Radzen.ButtonStyle.Primary"
+                                                      Disabled="isBusy"
+                                                      class="btn-block mr-2" />
+                                    </RadzenCard>
+
+                                </EditForm>
+                                <hr>
+
+                                <div class="text-center">
+                                    <RadzenButton ButtonType="Radzen.ButtonType.Button"
+                                                  Text="Register"
+                                                  ButtonStyle="Radzen.ButtonStyle.Secondary"
+                                                  Disabled="isBusy"
+                                                  class="btn-block mr-2" Click="GoToRegister" />
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-xl-10 col-lg-12 col-md-9">
+            <div class="card">
+                <div class="card-header py-3">
+                    <h6 class="m-0 text-secondary">Default Credential</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col">
+                            <b>Super Admin : </b> superadmin@gmail.com / 123Pa$$word! / Default
+                            <br />
+                            <b>Basic User : </b> basicuser@gmail.com / 123Pa$$word! / Default
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    LoginRequest model = new LoginRequest();
+
+
+    bool isBusy = false;
+    string message = string.Empty;
+
+    Models.AlertMessageType messageType = Models.AlertMessageType.Success;
+
+
+
+    public async Task LoginUser()
+    {
+        isBusy = true;
+
+        var result = await authService.LoginUserAsync(model);
+        if (result.Succeeded)
+        {
+            message = result.Data.JwToken;
+            messageType = Models.AlertMessageType.Success;
+
+            var resultUserInfo = new StoreManager.ExpenseReport.Models.LocalUserInfo()
+            {
+                AccessToken = result.Data.JwToken,
+                Email = result.Data.Email,
+                FirstName = result.Data.UserName,
+                LastName = result.Data.UserName,
+                Id = result.Data.Id,
+            };
+
+            await storageService.SetItemAsync<StoreManager.ExpenseReport.Models.LocalUserInfo>("User", resultUserInfo);
+            await authenticationStateProvider.GetAuthenticationStateAsync();
+
+            navigationManager.NavigateTo("/");
+        }
+        else
+        {
+            message = result.Message;
+            messageType = Models.AlertMessageType.Error;
+
+        }
+
+
+        isBusy = false;
+    }
+
+    void GoToRegister()
+    {
+        navigationManager.NavigateTo("/auth/register");
+    }
+}

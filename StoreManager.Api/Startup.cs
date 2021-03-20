@@ -31,6 +31,7 @@ namespace StoreManager.Api
             services.AddSharedInfrastructure(_configuration);
             services.AddEssentials();
             services.AddControllers();
+            services.AddCors();
             services.AddMvc(o =>
             {
                 var policy = new AuthorizationPolicyBuilder()
@@ -51,6 +52,10 @@ namespace StoreManager.Api
             app.UseHttpsRedirection();
             app.UseMiddleware<ErrorHandlerMiddleware>();
             app.UseRouting();
+
+            app.UseCors(
+                options => options.SetIsOriginAllowed(x => _ = true).AllowAnyMethod().AllowAnyHeader().AllowCredentials()
+            );
 
             app.UseRouting();
             app.UseAuthentication();
