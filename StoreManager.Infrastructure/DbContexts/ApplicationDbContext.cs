@@ -24,6 +24,12 @@ namespace StoreManager.Infrastructure.DbContexts
 
         public DbSet<Product> Products { get; set; }
 
+        public DbSet<Currency> Currencies { get; set; }
+
+        public DbSet<ExpenseCategory> ExpenseCategories { get; set; }
+
+        public DbSet<ExpenseClaim> ExpenseClaims { get; set; }
+
         public IDbConnection Connection => Database.GetDbConnection();
 
         public bool HasChanges => ChangeTracker.HasChanges();

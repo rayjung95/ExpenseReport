@@ -12,7 +12,7 @@ namespace StoreManager.Web.Areas.Catalog.Mappings
         public ProductProfile()
         {
             CreateMap<GetAllProductsCachedResponse, ProductViewModel>().ReverseMap();
-            CreateMap<GetProductByIdResponse, ProductViewModel>().ReverseMap();
+            CreateMap<GetExpenseClaimtByIdResponse, ProductViewModel>().ReverseMap();
             CreateMap<CreateProductCommand, ProductViewModel>().ReverseMap();
             CreateMap<UpdateProductCommand, ProductViewModel>().ReverseMap();
         }
