@@ -25,7 +25,10 @@ namespace StoreManager.Infrastructure.Extensions
 
             services.AddTransient(typeof(IRepositoryAsync<>), typeof(RepositoryAsync<>));
             services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<IExpenseCategoryRepository, ExpenseCategoryRepository>();
             services.AddTransient<IExpenseClaimRepository, ExpenseClaimRepository>();
+            services.AddTransient<IExpenseClaimLineItemRepository, ExpenseClaimLineItemRepository>();
+            services.AddTransient<ICurrencyRepository, CurrencyRepository>();
             services.AddTransient<IProductCacheRepository, ProductCacheRepository>();
             services.AddTransient<IBrandRepository, BrandRepository>();
             services.AddTransient<IBrandCacheRepository, BrandCacheRepository>();

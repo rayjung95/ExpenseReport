@@ -46,18 +46,18 @@ namespace StoreManager.Application.Features.ExpenseClaims.Commands.Update
                 else
                 {
                     expenseClaim.Title = command.Title ?? expenseClaim.Title;
-                    expenseClaim.RequesterName = command.RequesterName ?? expenseClaim.RequesterName;
-                    expenseClaim.RequesterID = (command.RequesterID == 0) ? expenseClaim.RequesterID : command.RequesterID;
-                    expenseClaim.ApproverName = command.ApproverName ?? expenseClaim.ApproverName;
-                    expenseClaim.ApproverID = (command.ApproverID == 0) ? expenseClaim.ApproverID : command.ApproverID;
-                    expenseClaim.SubmitDate = (command.SubmitDate == DateTime.MinValue) ? expenseClaim.SubmitDate : command.SubmitDate;
-                    expenseClaim.ApprovalDate = (command.ApprovalDate == DateTime.MinValue) ? expenseClaim.ApprovalDate : command.ApprovalDate;
-                    expenseClaim.ProcessedDate = (command.ProcessedDate == DateTime.MinValue) ? expenseClaim.ProcessedDate : command.ProcessedDate;
-                    expenseClaim.TotalAmount = (command.TotalAmount == 0) ? expenseClaim.TotalAmount : command.TotalAmount;
-                    expenseClaim.Status = command.Status ?? expenseClaim.Status;
-                    expenseClaim.RequesterComments = command.RequesterComments ?? expenseClaim.RequesterComments;
-                    expenseClaim.ApproverComments = command.ApproverComments ?? expenseClaim.ApproverComments;
-                    expenseClaim.FinanceComments = command.FinanceComments ?? expenseClaim.FinanceComments;
+                    //expenseClaim.RequesterName = command.RequesterName ?? expenseClaim.RequesterName;
+                    //expenseClaim.RequesterID = (command.RequesterID == 0) ? expenseClaim.RequesterID : command.RequesterID;
+                    //expenseClaim.ApproverName = command.ApproverName ?? expenseClaim.ApproverName;
+                    //expenseClaim.ApproverID = (command.ApproverID == 0) ? expenseClaim.ApproverID : command.ApproverID;
+                    //expenseClaim.SubmitDate = (command.SubmitDate == DateTime.MinValue) ? expenseClaim.SubmitDate : command.SubmitDate;
+                    //expenseClaim.ApprovalDate = (command.ApprovalDate == DateTime.MinValue) ? expenseClaim.ApprovalDate : command.ApprovalDate;
+                    //expenseClaim.ProcessedDate = (command.ProcessedDate == DateTime.MinValue) ? expenseClaim.ProcessedDate : command.ProcessedDate;
+                    //expenseClaim.TotalAmount = (command.TotalAmount == 0) ? expenseClaim.TotalAmount : command.TotalAmount;
+                    //expenseClaim.Status = command.Status ?? expenseClaim.Status;
+                    //expenseClaim.RequesterComments = command.RequesterComments ?? expenseClaim.RequesterComments;
+                    //expenseClaim.ApproverComments = command.ApproverComments ?? expenseClaim.ApproverComments;
+                    //expenseClaim.FinanceComments = command.FinanceComments ?? expenseClaim.FinanceComments;
 
                     await _repository.UpdateAsync(expenseClaim);
                     await _unitOfWork.Commit(cancellationToken);
