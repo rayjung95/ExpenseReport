@@ -43,7 +43,6 @@ namespace StoreManager.Application.Features.ExpenseClaimLineItems.Commands.Updat
                 }
                 else
                 {
-                    expenseClaimLineItem.ExpenseClaimID = (command.ExpenseClaimID == 0) ? expenseClaimLineItem.ExpenseClaimID : command.ExpenseClaimID ;
                     expenseClaimLineItem.ExpenseCategoryID = (command.ExpenseCategoryID == 0) ? expenseClaimLineItem.ExpenseCategoryID : command.ExpenseCategoryID;
                     expenseClaimLineItem.Payee = command.Payee ?? expenseClaimLineItem.Payee;
                     expenseClaimLineItem.Date = (command.Date == DateTime.MinValue) ? expenseClaimLineItem.Date : command.Date;

@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StoreManager.Infrastructure.DbContexts;
 
-namespace StoreManager.Infrastructure.Migrations.ApplicationDb
+namespace StoreManager.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210403062037_initial6")]
-    partial class initial6
+    [Migration("20210405055848_test1")]
+    partial class test1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -148,9 +148,6 @@ namespace StoreManager.Infrastructure.Migrations.ApplicationDb
                     b.Property<string>("ApproverName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("BudgetConfirm")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -166,25 +163,7 @@ namespace StoreManager.Infrastructure.Migrations.ApplicationDb
                     b.Property<DateTime?>("LastModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Ministry")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MyProperty")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Payee")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("PreparedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime>("ProcessedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ProjectName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("RecieptDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("RequesterComments")
@@ -201,12 +180,6 @@ namespace StoreManager.Infrastructure.Migrations.ApplicationDb
 
                     b.Property<DateTime>("SubmitDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("TeamName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TeamNumber")
-                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
@@ -247,7 +220,7 @@ namespace StoreManager.Infrastructure.Migrations.ApplicationDb
                     b.Property<int>("ExpenseCategoryID")
                         .HasColumnType("int");
 
-                    b.Property<int>("ExpenseClaimID")
+                    b.Property<int?>("ExpenseClaimId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Gst")
@@ -272,7 +245,7 @@ namespace StoreManager.Infrastructure.Migrations.ApplicationDb
 
                     b.HasIndex("ExpenseCategoryID");
 
-                    b.HasIndex("ExpenseClaimID");
+                    b.HasIndex("ExpenseClaimId");
 
                     b.ToTable("ExpenseClaimLineItem");
                 });
@@ -331,9 +304,7 @@ namespace StoreManager.Infrastructure.Migrations.ApplicationDb
 
                     b.HasOne("StoreManager.Domain.Entities.Catalog.ExpenseClaim", null)
                         .WithMany("ExpensClaimLineItems")
-                        .HasForeignKey("ExpenseClaimID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ExpenseClaimId");
                 });
 
             modelBuilder.Entity("StoreManager.Domain.Entities.Catalog.Product", b =>

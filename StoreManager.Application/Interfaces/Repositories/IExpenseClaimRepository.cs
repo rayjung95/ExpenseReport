@@ -1,4 +1,5 @@
-﻿using StoreManager.Domain.Entities.Catalog;
+﻿using StoreManager.Application.Features.ExpenseClaims.Commands.Create;
+using StoreManager.Domain.Entities.Catalog;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,5 +19,8 @@ namespace StoreManager.Application.Interfaces.Repositories
         Task UpdateAsync(ExpenseClaim expenseClaim);
 
         Task DeleteAsync(ExpenseClaim expenseClaim);
+
+        Task<int> CreateExpenseReport(CreateExpenseClaimReportCommand request);
+
     }
 }

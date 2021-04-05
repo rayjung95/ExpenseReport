@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StoreManager.API.Controllers;
+using StoreManager.Application.DTOs.ExpenseClaim;
 using StoreManager.Application.Features.ExpenseClaims.Commands.Create;
 using StoreManager.Application.Features.ExpenseClaims.Commands.Delete;
 using StoreManager.Application.Features.ExpenseClaims.Commands.Update;
@@ -34,6 +35,13 @@ namespace StoreManager.Api.Controllers.v1
         // POST api/<controller>
         [HttpPost]
         public async Task<IActionResult> Post(CreateExpenseClaimCommand command)
+        {
+            return Ok(await _mediator.Send(command));
+        }
+        
+        // POST api/<controller>
+        [HttpPost("Report")]
+        public async Task<IActionResult> CreateExpenseReport(CreateExpenseClaimReportCommand command)
         {
             return Ok(await _mediator.Send(command));
         }

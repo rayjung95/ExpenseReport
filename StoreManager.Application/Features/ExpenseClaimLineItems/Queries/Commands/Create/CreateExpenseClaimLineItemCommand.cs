@@ -11,7 +11,6 @@ namespace StoreManager.Application.Features.ExpenseClaimLineItems.Commands.Creat
 {
     public partial class CreateExpenseClaimLineItemCommand : IRequest<Result<int>>
     {
-        public int ExpenseClaimID { get; set; }
         public int ExpenseCategoryID { get; set; }
         public string Payee { get; set; }
         public DateTime Date { get; set; }
@@ -22,6 +21,15 @@ namespace StoreManager.Application.Features.ExpenseClaimLineItems.Commands.Creat
         public int CurrencyID { get; set; }
         public decimal UsdAmount { get; set; }
         public byte[] Receipt { get; set; }
+
+
+        // Gcc properties
+
+
+        public decimal Ab { get; set; }
+        public decimal Net { get; set; }
+        public decimal Gst { get; set; }
+        public decimal Pst { get; set; }
     }
 
     public class CreateExpensClaimLineItemCommandHandler : IRequestHandler<CreateExpenseClaimLineItemCommand, Result<int>>

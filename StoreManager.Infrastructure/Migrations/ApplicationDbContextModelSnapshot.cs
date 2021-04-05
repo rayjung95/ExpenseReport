@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StoreManager.Infrastructure.DbContexts;
 
-namespace StoreManager.Infrastructure.Migrations.ApplicationDb
+namespace StoreManager.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -146,9 +146,6 @@ namespace StoreManager.Infrastructure.Migrations.ApplicationDb
                     b.Property<string>("ApproverName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("BudgetConfirm")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -164,25 +161,7 @@ namespace StoreManager.Infrastructure.Migrations.ApplicationDb
                     b.Property<DateTime?>("LastModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Ministry")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MyProperty")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Payee")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("PreparedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime>("ProcessedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ProjectName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("RecieptDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("RequesterComments")
@@ -199,12 +178,6 @@ namespace StoreManager.Infrastructure.Migrations.ApplicationDb
 
                     b.Property<DateTime>("SubmitDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("TeamName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TeamNumber")
-                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");

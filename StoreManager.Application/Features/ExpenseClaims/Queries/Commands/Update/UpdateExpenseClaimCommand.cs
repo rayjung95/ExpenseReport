@@ -4,6 +4,8 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
+using StoreManager.Domain.Entities.Catalog;
 
 namespace StoreManager.Application.Features.ExpenseClaims.Commands.Update
 {
@@ -23,6 +25,8 @@ namespace StoreManager.Application.Features.ExpenseClaims.Commands.Update
         public string RequesterComments { get; set; }
         public string ApproverComments { get; set; }
         public string FinanceComments { get; set; }
+        public List<ExpenseClaimLineItem> ExpensClaimLineItems { get; set; } = new List<ExpenseClaimLineItem>();
+
 
         public class UpdateExpenseClaimCommandHandler : IRequestHandler<UpdateExpenseClaimCommand, Result<int>>
         {
@@ -46,18 +50,19 @@ namespace StoreManager.Application.Features.ExpenseClaims.Commands.Update
                 else
                 {
                     expenseClaim.Title = command.Title ?? expenseClaim.Title;
-                    //expenseClaim.RequesterName = command.RequesterName ?? expenseClaim.RequesterName;
-                    //expenseClaim.RequesterID = (command.RequesterID == 0) ? expenseClaim.RequesterID : command.RequesterID;
-                    //expenseClaim.ApproverName = command.ApproverName ?? expenseClaim.ApproverName;
-                    //expenseClaim.ApproverID = (command.ApproverID == 0) ? expenseClaim.ApproverID : command.ApproverID;
-                    //expenseClaim.SubmitDate = (command.SubmitDate == DateTime.MinValue) ? expenseClaim.SubmitDate : command.SubmitDate;
-                    //expenseClaim.ApprovalDate = (command.ApprovalDate == DateTime.MinValue) ? expenseClaim.ApprovalDate : command.ApprovalDate;
-                    //expenseClaim.ProcessedDate = (command.ProcessedDate == DateTime.MinValue) ? expenseClaim.ProcessedDate : command.ProcessedDate;
-                    //expenseClaim.TotalAmount = (command.TotalAmount == 0) ? expenseClaim.TotalAmount : command.TotalAmount;
-                    //expenseClaim.Status = command.Status ?? expenseClaim.Status;
-                    //expenseClaim.RequesterComments = command.RequesterComments ?? expenseClaim.RequesterComments;
-                    //expenseClaim.ApproverComments = command.ApproverComments ?? expenseClaim.ApproverComments;
-                    //expenseClaim.FinanceComments = command.FinanceComments ?? expenseClaim.FinanceComments;
+                    expenseClaim.RequesterName = command.RequesterName ?? expenseClaim.RequesterName;
+                    expenseClaim.RequesterID = (command.RequesterID == 0) ? expenseClaim.RequesterID : command.RequesterID;
+                    expenseClaim.ApproverName = command.ApproverName ?? expenseClaim.ApproverName;
+                    expenseClaim.ApproverID = (command.ApproverID == 0) ? expenseClaim.ApproverID : command.ApproverID;
+                    expenseClaim.SubmitDate = (command.SubmitDate == DateTime.MinValue) ? expenseClaim.SubmitDate : command.SubmitDate;
+                    expenseClaim.ApprovalDate = (command.ApprovalDate == DateTime.MinValue) ? expenseClaim.ApprovalDate : command.ApprovalDate;
+                    expenseClaim.ProcessedDate = (command.ProcessedDate == DateTime.MinValue) ? expenseClaim.ProcessedDate : command.ProcessedDate;
+                    expenseClaim.TotalAmount = (command.TotalAmount == 0) ? expenseClaim.TotalAmount : command.TotalAmount;
+                    expenseClaim.Status = command.Status ?? expenseClaim.Status;
+                    expenseClaim.RequesterComments = command.RequesterComments ?? expenseClaim.RequesterComments;
+                    expenseClaim.ApproverComments = command.ApproverComments ?? expenseClaim.ApproverComments;
+                    expenseClaim.FinanceComments = command.FinanceComments ?? expenseClaim.FinanceComments;
+                    expenseClaim.ExpensClaimLineItems = command.ExpensClaimLineItems ?? expenseClaim.ExpensClaimLineItems;
 
                     await _repository.UpdateAsync(expenseClaim);
                     await _unitOfWork.Commit(cancellationToken);

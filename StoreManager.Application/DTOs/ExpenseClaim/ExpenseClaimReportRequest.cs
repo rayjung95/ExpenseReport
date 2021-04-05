@@ -1,10 +1,11 @@
-﻿using AspNetCoreHero.Abstractions.Domain;
+﻿using StoreManager.Domain.Entities.Catalog;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace StoreManager.Domain.Entities.Catalog
+namespace StoreManager.Application.DTOs.ExpenseClaim
 {
-    public class ExpenseClaim : AuditableEntity
+    public class ExpenseClaimReportRequest
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -23,24 +24,5 @@ namespace StoreManager.Domain.Entities.Catalog
         public string FinanceComments { get; set; }
 
         public List<ExpenseClaimLineItem> ExpensClaimLineItems { get; set; } = new List<ExpenseClaimLineItem>();
-
-
-        //// GCC Properties
-
-        //public DateTime PreparedDate { get; set; }
-        //public DateTime RecieptDate { get; set; }
-
-        //public string Ministry { get; set; }
-        //public string TeamName { get; set; }
-        //public int TeamNumber { get; set; }
-        //public int MyProperty { get; set; }
-
-        //public string Payee { get; set; }
-        //public string ProjectName { get; set; }
-        //public string BudgetConfirm { get; set; }
-
-
-
-
     }
 }
