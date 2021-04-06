@@ -38,9 +38,19 @@ namespace StoreManager.Application.Features.ExpenseClaims.Queries.GetAllPaged
             {
                 Id = e.Id,
                 Title = e.Title,
-                ApproverName = e.ApproverName,
                 RequesterName = e.RequesterName,
-                TotalAmount = e.TotalAmount
+                RequesterID = e.RequesterID,
+                ApproverName = e.ApproverName,
+                ApproverID = e.ApproverID,
+                SubmitDate = e.SubmitDate,
+                ApprovalDate = e.ApprovalDate,
+                ProcessedDate = e.ProcessedDate,
+                TotalAmount = e.TotalAmount,
+                Status = e.Status,
+                RequesterComments = e.RequesterComments,
+                ApproverComments = e.ApproverComments,
+                FinanceComments = e.FinanceComments,
+                ExpensClaimLineItems = e.ExpensClaimLineItems
             };
             var paginatedList = await _repository.ExpenseClaims
                 .Select(expression)

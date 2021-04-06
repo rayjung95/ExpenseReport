@@ -57,6 +57,17 @@ namespace StoreManager.Api.Controllers.v1
             return Ok(await _mediator.Send(command));
         }
 
+        // PUT api/<controller>/5
+        [HttpPut("{id}/changeStatus")]
+        public async Task<IActionResult> ChangeStatus(int id, ChangeStatusCommand command)
+        {
+            if (id != command.Id)
+            {
+                return BadRequest();
+            }
+            return Ok(await _mediator.Send(command));
+        }
+
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
