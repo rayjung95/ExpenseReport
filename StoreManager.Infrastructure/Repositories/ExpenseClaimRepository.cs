@@ -69,7 +69,7 @@ namespace StoreManager.Infrastructure.Repositories
                 ApprovalDate = request.ApprovalDate,
                 ProcessedDate = request.ProcessedDate,
                 TotalAmount = request.TotalAmount,
-                Status = request.Status,
+                Status = "submited",
                 RequesterComments = request.RequesterComments,
                 ApproverComments = request.ApproverComments,
                 FinanceComments = request.FinanceComments
