@@ -6,6 +6,7 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
 
 namespace StoreManager.Application.Features.ExpenseClaims.Commands.Create
 {
@@ -24,6 +25,7 @@ namespace StoreManager.Application.Features.ExpenseClaims.Commands.Create
         public string RequesterComments { get; set; }
         public string ApproverComments { get; set; }
         public string FinanceComments { get; set; }
+
     }
 
     public class CreateExpensClaimCommandHandler : IRequestHandler<CreateExpenseClaimCommand, Result<int>>

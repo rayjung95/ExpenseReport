@@ -25,19 +25,19 @@ namespace StoreManager.Domain.Entities.Catalog
         public List<ExpenseClaimLineItem> ExpensClaimLineItems { get; set; } = new List<ExpenseClaimLineItem>();
 
 
-        // GCC Properties
+        //// GCC Properties
 
-        public DateTime PreparedDate { get; set; }
-        public DateTime RecieptDate { get; set; }
+        //public DateTime PreparedDate { get; set; }
+        //public DateTime RecieptDate { get; set; }
 
-        public string Ministry { get; set; }
-        public string TeamName { get; set; }
-        public int TeamNumber { get; set; }
-        public int MyProperty { get; set; }
+        //public string Ministry { get; set; }
+        //public string TeamName { get; set; }
+        //public int TeamNumber { get; set; }
+        //public int MyProperty { get; set; }
 
-        public string Payee { get; set; }
-        public string ProjectName { get; set; }
-        public string BudgetConfirm { get; set; }
+        //public string Payee { get; set; }
+        //public string ProjectName { get; set; }
+        //public string BudgetConfirm { get; set; }
 
 
 

@@ -9,6 +9,7 @@ namespace StoreManager.Domain.Entities.Catalog
     public class ExpenseClaimLineItem
     {
         public int Id { get; set; }
+
         public int ExpenseClaimID { get; set; }
         public int ExpenseCategoryID { get; set; }
         public string Payee { get; set; }
@@ -20,7 +21,6 @@ namespace StoreManager.Domain.Entities.Catalog
         public int CurrencyID { get; set; }
         public decimal UsdAmount { get; set; }
         public byte[] Receipt { get; set; }
-
 
         // Gcc properties
 

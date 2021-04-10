@@ -4,6 +4,8 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
+using StoreManager.Domain.Entities.Catalog;
 
 namespace StoreManager.Application.Features.ExpenseClaims.Commands.Update
 {
@@ -23,6 +25,8 @@ namespace StoreManager.Application.Features.ExpenseClaims.Commands.Update
         public string RequesterComments { get; set; }
         public string ApproverComments { get; set; }
         public string FinanceComments { get; set; }
+        public List<ExpenseClaimLineItem> ExpensClaimLineItems { get; set; } = new List<ExpenseClaimLineItem>();
+
 
         public class UpdateExpenseClaimCommandHandler : IRequestHandler<UpdateExpenseClaimCommand, Result<int>>
         {
@@ -58,6 +62,7 @@ namespace StoreManager.Application.Features.ExpenseClaims.Commands.Update
                     expenseClaim.RequesterComments = command.RequesterComments ?? expenseClaim.RequesterComments;
                     expenseClaim.ApproverComments = command.ApproverComments ?? expenseClaim.ApproverComments;
                     expenseClaim.FinanceComments = command.FinanceComments ?? expenseClaim.FinanceComments;
+                    expenseClaim.ExpensClaimLineItems = command.ExpensClaimLineItems ?? expenseClaim.ExpensClaimLineItems;
 
                     await _repository.UpdateAsync(expenseClaim);
                     await _unitOfWork.Commit(cancellationToken);

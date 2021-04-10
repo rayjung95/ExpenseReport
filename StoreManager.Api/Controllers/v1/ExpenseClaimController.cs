@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StoreManager.API.Controllers;
+using StoreManager.Application.DTOs.ExpenseClaim;
 using StoreManager.Application.Features.ExpenseClaims.Commands.Create;
 using StoreManager.Application.Features.ExpenseClaims.Commands.Delete;
 using StoreManager.Application.Features.ExpenseClaims.Commands.Update;
@@ -17,10 +18,11 @@ namespace StoreManager.Api.Controllers.v1
     public class ExpenseClaimController : BaseApiController<ExpenseClaimController>
     {
         //GET: api/<expenseclaimcontroller>
+        // Status will have 'queried' | 'approved' | 'submited'
         [HttpGet]
-        public async Task<IActionResult> GetAll(int pageNumber, int pageSize)
+        public async Task<IActionResult> GetAll(int pageNumber, int pageSize, string status)
         {
-            var expenseClaims = await _mediator.Send(new GetAllExpensClaimsQuery(pageNumber, pageSize));
+            var expenseClaims = await _mediator.Send(new GetAllExpensClaimsQuery(pageNumber, pageSize, status));
             return Ok(expenseClaims);
         }
 
@@ -37,10 +39,28 @@ namespace StoreManager.Api.Controllers.v1
         {
             return Ok(await _mediator.Send(command));
         }
+        
+        // POST api/<controller>
+        [HttpPost("Report")]
+        public async Task<IActionResult> CreateExpenseReport(CreateExpenseClaimReportCommand command)
+        {
+            return Ok(await _mediator.Send(command));
+        }
 
         // PUT api/<controller>/5
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, UpdateExpenseClaimCommand command)
+        {
+            if (id != command.Id)
+            {
+                return BadRequest();
+            }
+            return Ok(await _mediator.Send(command));
+        }
+
+        // PUT api/<controller>/5
+        [HttpPut("{id}/changeStatus")]
+        public async Task<IActionResult> ChangeStatus(int id, ChangeStatusCommand command)
         {
             if (id != command.Id)
             {
