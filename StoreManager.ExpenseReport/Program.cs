@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Tewr.Blazor.FileReader;
 
 namespace StoreManager.ExpenseReport
 {
@@ -25,6 +26,15 @@ namespace StoreManager.ExpenseReport
                 return new AuthenticationService(URL);
             });
 
+            builder.Services.AddScoped<ReportsService>(s =>
+            {
+                return new ReportsService(URL);
+            });
+
+            builder.Services.AddFileReaderService(options =>
+            {
+                options.UseWasmSharedBuffer = true;
+            });
 
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddOptions();

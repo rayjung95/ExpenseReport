@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using StoreManager.Domain.Entities.Catalog;
+using StoreManager.Application.Interfaces.Shared;
+using StoreManager.Application.DTOs.Mail;
 
 namespace StoreManager.Application.Features.ExpenseClaims.Commands.Update
 {
@@ -32,11 +34,13 @@ namespace StoreManager.Application.Features.ExpenseClaims.Commands.Update
         {
             private readonly IUnitOfWork _unitOfWork;
             private readonly IExpenseClaimRepository _repository;
+            private readonly IMailService _mailService;
 
-            public UpdateExpenseClaimCommandHandler(IExpenseClaimRepository repository, IUnitOfWork unitOfWork)
+            public UpdateExpenseClaimCommandHandler(IExpenseClaimRepository repository, IUnitOfWork unitOfWork, IMailService mailService)
             {
                 _repository = repository;
                 _unitOfWork = unitOfWork;
+                _mailService = mailService;
             }
 
             public async Task<Result<int>> Handle(UpdateExpenseClaimCommand command, CancellationToken cancellationToken)
@@ -64,7 +68,13 @@ namespace StoreManager.Application.Features.ExpenseClaims.Commands.Update
                     expenseClaim.FinanceComments = command.FinanceComments ?? expenseClaim.FinanceComments;
                     expenseClaim.ExpensClaimLineItems = command.ExpensClaimLineItems ?? expenseClaim.ExpensClaimLineItems;
 
+                    
                     await _repository.UpdateAsync(expenseClaim);
+                    if (command.Status == "submitted")
+                    {
+                        var route = $"reports/process/{expenseClaim.Id}";
+                        await _mailService.SendAsync(new MailRequest() { From = "vivien30@ethereal.email", To = "rayjung95@gmail.com", Body = $"Report is resubmitted. <a href=https://localhost:44380/{route}> click here to see the report</a>", Subject = "Report is resubmitted" });
+                    }
                     await _unitOfWork.Commit(cancellationToken);
                     return Result<int>.Success(expenseClaim.Id);
                 }

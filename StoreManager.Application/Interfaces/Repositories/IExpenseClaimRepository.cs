@@ -14,6 +14,8 @@ namespace StoreManager.Application.Interfaces.Repositories
 
         Task<ExpenseClaim> GetByIdAsync(int expenseClaimId);
 
+        Task<ExpenseClaim> GetReportByIdAsync(int expenseClaimId);
+
         Task<int> InsertAsync(ExpenseClaim expenseClaim);
 
         Task UpdateAsync(ExpenseClaim expenseClaim);

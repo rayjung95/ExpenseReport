@@ -1,0 +1,111 @@
+﻿@page "/reports/finance/{expenseClaimId:int}"
+
+@inject ReportsService reportsService
+@inject NavigationManager navigationManager
+@inject IFileReaderService fileReaderService
+
+@attribute [Authorize]
+
+
+<div class="row">
+    <div class="col-10">
+
+        @if (isBusy)
+        {
+            <div>...Loading</div>
+        }
+        else
+        {
+            <h3>Finance processing</h3>
+            <RadzenCard Style="margin-bottom:20px;">
+                <div class="col-6">
+                    <EditForm Model="report">
+                        <div class="row d-flex" style="margin-bottom: 10px">
+                            <label style="flex:1;">Select Action</label>
+                            <RadzenDropDown @bind-Value="report.Status" AllowClear="false" TValue="string" Placeholder="Process"
+                                            Data=@(statusOptions.Select(c => new { StatusValue = c.value, Name = c.displayName }))
+                                            TextProperty="Name" ValueProperty="StatusValue" Style="flex: 1;"
+                                            Change=@(args => OnStatusChange(args)) />
+                        </div>
+                        <div class="row d-flex" style="margin-bottom: 10px;">
+                            <label style="flex: 1;">Task Comments</label>
+                            <div class="flex-column d-flex" style="flex: 1;">
+                                <RadzenTextArea @bind-Value="report.FinanceComments" Placeholder="Type a value" Style="flex: 1; margin-bottom: 10px;" />
+                                <RadzenButton ButtonStyle="Radzen.ButtonStyle.Success"
+                                              Style="flex: 1; width: 200px;"
+                                              class="btn btn-block"
+                                              Text="Submit"
+                                              Click="SubmitReport" />
+                            </div>
+                        </div>
+                    </EditForm>
+                </div>
+            </RadzenCard>
+        }
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public int ExpenseClaimId { get; set; }
+    ExpenseClaim report = new ExpenseClaim();
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+    private String status = "processed";
+
+    StatusOption[] statusOptions = new StatusOption[]
+{       new StatusOption("processed", "Process"),
+            new StatusOption("financeRejected", "Reject"),
+                         };
+
+    private DateTime approvalDate = DateTime.Now;
+
+    bool isBusy = false;
+
+    async Task getReportAsync()
+    {
+        isBusy = true;
+
+        var userState = authenticationState.Result;
+        reportsService.AccessToken = userState.User.FindFirst("AccessToken").Value;
+
+        var result = await reportsService.GetReportByIdAsync(ExpenseClaimId);
+        report = result.Data;
+        isBusy = false;
+    }
+
+    void OnStatusChange(object value)
+    {
+        status = value.ToString();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await getReportAsync();
+    }
+
+
+    async Task SubmitReport()
+    {
+        isBusy = true;
+
+        report.Status = status;
+        var userState = authenticationState.Result;
+        reportsService.AccessToken = userState.User.FindFirst("AccessToken").Value;
+
+
+        var result = await reportsService.UpdateReporStatusAsync(report, report.Id);
+
+        if (result.Succeeded)
+        {
+
+            navigationManager.NavigateTo("/");
+        }
+
+        isBusy = false;
+    }
+
+}

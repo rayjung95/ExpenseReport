@@ -18,7 +18,7 @@ namespace StoreManager.Api.Controllers.v1
     public class ExpenseClaimController : BaseApiController<ExpenseClaimController>
     {
         //GET: api/<expenseclaimcontroller>
-        // Status will have 'queried' | 'approved' | 'submited'
+        // Status will have 'submited' | 'queried' | 'approved'
         [HttpGet]
         public async Task<IActionResult> GetAll(int pageNumber, int pageSize, string status)
         {
@@ -30,6 +30,13 @@ namespace StoreManager.Api.Controllers.v1
         public async Task<IActionResult> GetById(int id)
         {
             var expenseClaim = await _mediator.Send(new GetExpenseClaimByIdQuery() { Id = id });
+            return Ok(expenseClaim);
+        }
+
+        [HttpGet("{id}/Report")]
+        public async Task<IActionResult> GetReportById(int id)
+        {
+            var expenseClaim = await _mediator.Send(new GetExpenseClaimReportByIdQuery() { Id = id });
             return Ok(expenseClaim);
         }
 
