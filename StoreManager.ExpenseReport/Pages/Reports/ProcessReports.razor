@@ -1,0 +1,189 @@
+﻿@page "/reports/process/{expenseClaimId:int}"
+
+@inject ReportsService reportsService
+@inject NavigationManager navigationManager
+@inject IFileReaderService fileReaderService
+
+@attribute [Authorize]
+
+
+<div class="row">
+    <div class="col-10">
+
+        @if (isBusy)
+        {
+            <div>...Processing</div>
+        }
+        else
+        {
+            <h3>Process a report</h3>
+            <RadzenCard Style="margin-bottom:20px;">
+                <div class="col-6">
+                    <EditForm Model="report">
+                        <div class="row d-flex" style="margin-bottom: 10px">
+                            <label style="flex:1;">Select Action</label>
+                            <RadzenDropDown @bind-Value="report.Status" AllowClear="false" TValue="string" Placeholder=@report.Status
+                                            Data=@(statusOptions.Select(c => new { StatusValue = c.value, Name = c.displayName }))
+                                            TextProperty="Name" ValueProperty="StatusValue" Style="flex: 1;"
+                                            />
+                        </div>
+                        <div class="row d-flex" style="margin-bottom: 10px">
+                            <label style="flex: 1;">Approval Id</label>
+                            <RadzenNumeric @bind-Value="report.ApproverID" Placeholder="Type a value" Style="flex: 1;" />
+                        </div>
+                        <div class="row d-flex" style="margin-bottom: 10px">
+                            <label style="flex: 1;">Approval Name</label>
+                            <RadzenTextBox @bind-Value="report.ApproverName" Placeholder="Type a value" Style="flex: 1;" />
+                        </div>
+                        <div class="row d-flex" style="margin-bottom: 10px;">
+                            <label style="flex: 1;">Task Comments</label>
+                            <div class="flex-column d-flex" style="flex: 1;">
+                                <RadzenTextArea @bind-Value="report.ApproverComments" Placeholder="Type a value" Style="flex: 1; margin-bottom: 10px;" />
+                                <RadzenButton ButtonStyle="Radzen.ButtonStyle.Success"
+                                              Style="flex: 1; width: 200px;"
+                                              class="btn btn-block"
+                                              Text="Submit"
+                                              Click="SubmitReport" />
+                            </div>
+                        </div>
+                    </EditForm>
+                </div>
+            </RadzenCard>
+
+            <h3>Expense Claim</h3>
+            <RadzenCard>
+                <div class="col-6">
+                    <div class="row align-items-center d-flex" style="margin-bottom: 10px">
+                        <label style="flex: 1;">Title</label>
+                        <label style="flex: 1;">@report.Title</label>
+                    </div>
+                    <div class="row align-items-center d-flex" style="margin-bottom: 10px">
+                        <label style="flex: 1;">Requester</label>
+                        <label style="flex: 1;">@report.RequesterName</label>
+                    </div>
+                    <div class="row align-items-center d-flex" style="margin-bottom: 10px">
+                        <label style="flex: 1;">Approver</label>
+                        <label style="flex: 1;">@report.ApproverName</label>
+                    </div>
+                    <div class="row align-items-center d-flex" style="margin-bottom: 10px">
+                        <label style="flex: 1;">Processed Date</label>
+                        @*<label style="flex: 1;">@SubmitDate.ToString()</label>*@
+                    </div>
+                    <div class="row align-items-center d-flex" style="margin-bottom: 10px">
+                        <label style="flex: 1;">Total Amount</label>
+                        <label style="flex: 1;">@report.TotalAmount</label>
+                    </div>
+                    <div class="row align-items-center d-flex" style="margin-bottom: 10px">
+                        <label style="flex: 1;">Status</label>
+                        <label style="flex: 1;">@report.Status</label>
+                    </div>
+                    <div class="row align-items-center d-flex" style="margin-bottom: 10px">
+                        <label style="flex: 1;">Requester Comments</label>
+                        <label style="flex: 1;">@report.RequesterComments</label>
+                    </div>
+                    <div class="row align-items-center d-flex" style="margin-bottom: 10px">
+                        <label style="flex: 1;">Approover Comments</label>
+                        <label style="flex: 1;">@report.ApproverComments</label>
+                    </div>
+                    <div class="row align-items-center d-flex" style="margin-bottom: 10px">
+                        <label style="flex: 1;">Finace Comments</label>
+                        <label style="flex: 1;">@report.FinanceComments</label>
+                    </div>
+
+                </div>
+
+                <div class="flex-column d-flex">
+                    <h3>Expense Claim Items</h3>
+                    <div class="row d-flex align-items-center" style="margin: 10px">
+                        <label style="width: 120px;">Category ID</label>
+                        <label class="m-l-15" style="width: 140px;">Payee</label>
+                        <label class="m-l-15" style="width: 140px;">Date</label>
+                        <label class="m-l-15" style="width: 140px;">Amount</label>
+                        <label class="m-l-15" style="width: 140px;">Currency ID</label>
+                        <label class="m-l-15" style="width: 140px;">Currency Code</label>
+                        <label class="m-l-15" style="width: 140px;">USD Amount</label>
+                        <label class="m-l-15" style="width: 200px;">Reciept</label>
+                    </div>
+
+                    @foreach (var item in report.ExpensClaimLineItems)
+                    {
+                        <div class="row d-flex align-items-center" style="flex:1; margin: 10px">
+                            <EditForm Model="item">
+                                <label style="width: 120px;">@item.ExpenseCategoryID</label>
+                                <label class="m-l-15" style="width: 140px;">@item.Payee</label>
+                                <label class="m-l-15" style="width: 140px;">@item.Date</label>
+                                <label class="m-l-15" style="width: 140px;">@item.Amount</label>
+                                <label class="m-l-15" style="width: 140px;">@item.CurrencyID</label>
+                                <label class="m-l-15" style="width: 140px;">@item.CurrencyCode</label>
+                                <label class="m-l-15" style="width: 140px;">@item.UsdAmount</label>
+                                <label class="m-l-15" style="width: 200px;">Reciept</label>
+                                <RadzenFileInput @bind-Value="item.Description" TValue="string" Disabled="true" />
+                            </EditForm>
+                        </div>
+                    }
+                </div>
+            </RadzenCard>
+        }
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public int ExpenseClaimId { get; set; }
+    ExpenseClaim report = new ExpenseClaim();
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+
+    StatusOption[] statusOptions = new StatusOption[]
+    {       new StatusOption("submitted", "Submit"),
+            new StatusOption("quried", "Query"),
+            new StatusOption("approved", "Approve"),
+                             };
+
+    private DateTime approvalDate = DateTime.Now;
+
+    bool isBusy = false;
+
+    async Task getReportAsync()
+    {
+        isBusy = true;
+
+        var userState = authenticationState.Result;
+        reportsService.AccessToken = userState.User.FindFirst("AccessToken").Value;
+
+        var result = await reportsService.GetReportByIdAsync(ExpenseClaimId);
+        report = result.Data;
+        isBusy = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await getReportAsync();
+    }
+
+
+    async Task SubmitReport()
+    {
+        isBusy = true;
+
+        report.ApprovalDate = approvalDate;
+
+        var userState = authenticationState.Result;
+        reportsService.AccessToken = userState.User.FindFirst("AccessToken").Value;
+
+
+        var result = await reportsService.UpdateReporStatusAsync(report, report.Id);
+
+        if (result.Succeeded)
+        {
+
+            navigationManager.NavigateTo("/");
+        }
+
+        isBusy = false;
+    }
+
+}

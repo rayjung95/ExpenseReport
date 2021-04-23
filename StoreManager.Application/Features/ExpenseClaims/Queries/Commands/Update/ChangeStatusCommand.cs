@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using StoreManager.Domain.Entities.Catalog;
+using StoreManager.Application.Interfaces.Shared;
+using StoreManager.Application.DTOs.Mail;
 
 namespace StoreManager.Application.Features.ExpenseClaims.Commands.Update
 {
@@ -22,15 +24,18 @@ namespace StoreManager.Application.Features.ExpenseClaims.Commands.Update
         public string FinanceComments { get; set; }
 
 
+
         public class ChangeStatusCommandHandler : IRequestHandler<ChangeStatusCommand, Result<int>>
         {
             private readonly IUnitOfWork _unitOfWork;
             private readonly IExpenseClaimRepository _repository;
+            private readonly IMailService _mailService;
 
-            public ChangeStatusCommandHandler(IExpenseClaimRepository repository, IUnitOfWork unitOfWork)
+            public ChangeStatusCommandHandler(IExpenseClaimRepository repository, IUnitOfWork unitOfWork, IMailService mailService)
             {
                 _repository = repository;
                 _unitOfWork = unitOfWork;
+                _mailService = mailService;
             }
 
             public async Task<Result<int>> Handle(ChangeStatusCommand command, CancellationToken cancellationToken)
@@ -54,6 +59,72 @@ namespace StoreManager.Application.Features.ExpenseClaims.Commands.Update
 
                     await _repository.UpdateAsync(expenseClaim);
                     await _unitOfWork.Commit(cancellationToken);
+
+                    if (command.Status == "approved")
+                    {
+                        await _mailService.SendAsync(
+                            new MailRequest()
+                            {
+                                From = "vivien30@ethereal.email",
+                                To = "rayjung95@gmail.com",
+                                Body = "Your Expense Claim is approved by approval",
+                                Subject = "Expense Claim is approved"
+                            }
+                        );
+                    }
+                    else if (command.Status == "quried")
+                    {
+                        var route = $"reports/rework/{command.Id}";
+                        await _mailService.SendAsync(
+                            new MailRequest()
+                            {
+                                From = "vivien30@ethereal.email",
+                                To = "rayjung95@gmail.com",
+                                Body = $"Your Expense Claim is queried by approval.                    Rework is required. <a href=https://localhost:44380/{route}>Click here to                          rework</a>",
+                                Subject = "Expense Claim is quried"
+                            }
+                        );
+                    }
+                    else if (command.Status == "rejected")
+                    {
+                        await _mailService.SendAsync(
+                            new MailRequest()
+                            {
+                                From = "vivien30@ethereal.email",
+                                To = "rayjung95@gmail.com",
+                                Body = "Your Expense Claim is rejected by approval",
+                                Subject = "Expense Claim is rejected"
+                            }
+                        );
+
+                    }
+                    else if (command.Status == "financeRejected")
+                    {
+                        await _mailService.SendAsync(
+                            new MailRequest()
+                            {
+                                From = "vivien30@ethereal.email",
+                                To = "rayjung95@gmail.com",
+                                Body = "Your Expense Claim is rejected by finance",
+                                Subject = "Expense Claim is rejected by approval"
+                            }
+                        );
+
+                    }
+                    else if (command.Status == "processed")
+                    {
+                        await _mailService.SendAsync(
+                            new MailRequest()
+                            {
+                                From = "vivien30@ethereal.email",
+                                To = "rayjung95@gmail.com",
+                                Body = "Your Expense Claim is processed by finance",
+                                Subject = "Expense Claim is processed"
+                            }
+                        );
+
+                    }
+
                     return Result<int>.Success(expenseClaim.Id);
                 }
             }

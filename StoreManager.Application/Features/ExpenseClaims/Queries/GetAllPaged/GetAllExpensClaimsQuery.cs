@@ -59,6 +59,7 @@ namespace StoreManager.Application.Features.ExpenseClaims.Queries.GetAllPaged
             {
                 var submitedList = await _repository.ExpenseClaims
                     .Where(e => e.Status == "submited")
+                    .OrderByDescending(e => e.SubmitDate)
                     .Select(expression)
                     .ToPaginatedListAsync(request.PageNumber, request.PageSize);
                 return submitedList;
@@ -66,6 +67,7 @@ namespace StoreManager.Application.Features.ExpenseClaims.Queries.GetAllPaged
             {
                 var quriedList = await _repository.ExpenseClaims
                         .Where(e => e.Status == "quried")
+                        .OrderByDescending(e => e.SubmitDate)
                         .Select(expression)
                         .ToPaginatedListAsync(request.PageNumber, request.PageSize);
                 return quriedList;
@@ -73,12 +75,24 @@ namespace StoreManager.Application.Features.ExpenseClaims.Queries.GetAllPaged
             {
                 var approvedList = await _repository.ExpenseClaims
                    .Where(e => e.Status == "approved")
+                   .OrderByDescending(e => e.SubmitDate)
+                   .Select(expression)
+                   .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+                return approvedList;
+            }
+            else if (request.Status == "rejected")
+            {
+                var approvedList = await _repository.ExpenseClaims
+                   .Where(e => e.Status == "rejected")
+                   .OrderByDescending(e => e.SubmitDate)
                    .Select(expression)
                    .ToPaginatedListAsync(request.PageNumber, request.PageSize);
                 return approvedList;
 
-            } else {
+            }
+            else {
                 var paginatedList = await _repository.ExpenseClaims
+                    .OrderByDescending(e => e.SubmitDate)
                     .Select(expression)
                     .ToPaginatedListAsync(request.PageNumber, request.PageSize);
                 return paginatedList;

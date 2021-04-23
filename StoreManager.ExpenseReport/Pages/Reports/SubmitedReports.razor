@@ -1,0 +1,103 @@
+﻿@page "/reports/submited"
+@page "/reports/submited/{pageNumber}"
+
+@inject ReportsService reportsService
+@inject NavigationManager navigationManager
+@attribute [Authorize]
+
+
+<h3>Submited Reports</h3>
+@if (isBusy)
+{
+    <h2>Loading...</h2>
+}
+else
+{
+    <RadzenGrid Data=@reports AllowFiltering="true" AllowPaging="true" AllowSorting="true" TItem="ExpenseClaim" ColumnWidth="200px" PageSize="20">
+        <Columns>
+            <RadzenGridColumn TItem="ExpenseClaim" Property="Title" Title="Title" />
+            <RadzenGridColumn TItem="ExpenseClaim" Property="RequesterName" Title="Requester Name" />
+            <RadzenGridColumn TItem="ExpenseClaim" Property="ApproverName" Title="Approver Name" />
+            <RadzenGridColumn TItem="ExpenseClaim" Property="SubmitDate" Title="Submit Date" />
+            <RadzenGridColumn TItem="ExpenseClaim" Property="TotalAmount" Title="Total Amount" />
+            <RadzenGridColumn TItem="ExpenseClaim" Property="Status" Title="Status" />
+            <RadzenGridColumn TItem="ExpenseClaim" Property="RequesterComments" Title="RequesterComments" />
+            <RadzenGridColumn TItem="ExpenseClaim" Title="Actions" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="100px">
+                <Template Context="item">
+                    <RadzenButton ButtonStyle="Radzen.ButtonStyle.Info" Size="ButtonSize.Medium" Click="@(args => HandleOnPress(item))" Text="Process">
+                    </RadzenButton>
+                </Template>
+            </RadzenGridColumn>
+        </Columns>
+    </RadzenGrid>
+
+    <div class="row">
+        @for (int i = 1; i <= totalPage; i++)
+        {
+            int page = i;
+            @if (page == PageNumber)
+            {
+                <RadzenButton ButtonStyle="Radzen.ButtonStyle.Info" Text="@i.ToString()" Click="async () => await movePageAsync(page)" Disabled="true" Style="margin: 8px;" />
+
+            }
+            else
+            {
+                <RadzenButton ButtonStyle="Radzen.ButtonStyle.Info" Text="@i.ToString()" Click="async () => await movePageAsync(page)" Style="margin: 8px;" />
+
+            }
+
+        }
+    </div>
+}
+
+
+@code {
+    [Parameter]
+    public int? PageNumber { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+
+    int totalPage = 1;
+    bool isBusy = false;
+    IEnumerable<ExpenseClaim> reports;
+
+    async Task getReportsAsync()
+    {
+        isBusy = true;
+
+        var userState = authenticationState.Result;
+        reportsService.AccessToken = userState.User.FindFirst("AccessToken").Value;
+
+        if (PageNumber == null)
+        {
+            PageNumber = 1;
+        }
+
+        var result = await reportsService.GetAllReportsByPageAsync("", PageNumber.Value);
+        totalPage = result.TotalPages;
+
+        reports = result.Data.AsEnumerable();
+        isBusy = false;
+    }
+
+    async Task movePageAsync(int pageNumber)
+    {
+        PageNumber = pageNumber;
+        await getReportsAsync();
+    }
+
+    private void HandleOnPress(ExpenseClaim item)
+    {
+        navigationManager.NavigateTo($"/reports/process/{item.Id}");
+    }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await getReportsAsync();
+    }
+
+}

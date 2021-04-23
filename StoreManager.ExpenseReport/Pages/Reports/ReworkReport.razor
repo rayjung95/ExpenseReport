@@ -1,0 +1,264 @@
+﻿@page "/reports/rework/{expenseClaimId:int}"
+
+@inject ReportsService reportsService
+@inject NavigationManager navigationManager
+@inject IFileReaderService fileReaderService
+
+@attribute [Authorize]
+
+<h3>Create a report</h3>
+
+
+<div class="row">
+    <div class="col-10">
+        @if (isBusy)
+        {
+            <div>...Loading</div>
+        }
+        else
+        {
+            <RadzenCard Style="margin-bottom:20px;">
+                <div class="col-6">
+                    <EditForm Model="model">
+                        <div class="row d-flex" style="margin-bottom: 10px">
+                            <label style="flex:1;">Select Action</label>
+                            <RadzenDropDown @bind-Value="model.Status" AllowClear="false" TValue="string" Placeholder="Resubmit"
+                                            Data=@(statusOptions.Select(c => new { StatusValue = c.value, Name = c.displayName }))
+                                            TextProperty="Name" ValueProperty="StatusValue" Style="flex: 1;"
+                                            Change=@(args => OnStatusChange(args)) />
+                        </div>
+
+                        <div class="row d-flex" style="margin-bottom: 10px;">
+                            <label style="flex: 1;">Approval Name</label>
+                            <div class="flex-column d-flex" style="flex: 1;">
+                                <label style="flex: 1;">@model.ApproverName</label>
+                                <div style="display: flex; flex-direction: row; flex: 1; align-items: center;">
+                                    <RadzenButton ButtonStyle="Radzen.ButtonStyle.Success"
+                                                  Style="flex: 1; max-width:200px; margin-right:5px;"
+                                                  Text="Resubmit"
+                                                  Click="ReSubmitReport" />
+                                    <RadzenButton ButtonStyle="Radzen.ButtonStyle.Danger"
+                                                  Style="flex:1; max-width:200px;;"
+                                                  Text="Discard"
+                                                  Click="RemoveReport"
+                                                   />
+                                </div>
+
+                            </div>
+                        </div>
+                    </EditForm>
+                </div>
+            </RadzenCard>
+
+
+            <RadzenCard>
+
+                <EditForm Model="model">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="row align-items-center d-flex" style="margin-bottom: 10px">
+                        <label style="flex: 1;">Title</label>
+                        <RadzenTextBox @bind-Value="model.Title" Placeholder="Type a value" Style="flex: 1;" />
+                    </div>
+                    <div class="row align-items-center d-flex" style="margin-bottom: 10px">
+                        <label style="flex: 1;">Requester</label>
+                        <RadzenTextBox @bind-Value="model.RequesterName" Placeholder="Requester" Style="flex: 1;" />
+                    </div>
+                    <div class="row align-items-center d-flex" style="margin-bottom: 10px">
+                        <label style="flex: 1;">Approver</label>
+                        <RadzenTextBox @bind-Value="model.ApproverName" Placeholder="Approver" Style="flex: 1;" />
+                    </div>
+                    <div class="row align-items-center d-flex" style="margin-bottom: 10px">
+                        <label style="flex: 1;">Submit Date</label>
+                        <label style="flex: 1;">@model.SubmitDate.ToString()</label>
+                    </div>
+                    <div class="row align-items-center d-flex" style="margin-bottom: 10px">
+                        <label style="flex: 1;">Total Amount</label>
+                        <RadzenNumeric @bind-Value="model.TotalAmount" Placeholder="Title" Style="flex: 1;" />
+                    </div>
+                    <div class="row align-items-center d-flex" style="margin-bottom: 10px">
+                        <label style="flex: 1;">Requester Comments</label>
+                        <RadzenTextArea @bind-Value="model.RequesterComments" Placeholder="Type a value" Style="flex: 1;" />
+                    </div>
+                    <div class="row align-items-center d-flex" style="margin-bottom: 10px">
+                        <label style="flex: 1;">Approval Comments</label>
+                        <label style="flex: 1;">@model.ApproverComments</label>
+                        @*<RadzenTextArea @bind-Value="model.ApproverComments" Placeholder="Type a value" Style="flex: 1;" />*@
+                    </div>
+                </EditForm>
+                <div class="flex-column d-flex">
+                    <h3>Expense Claim Items</h3>
+                    <div class="row d-flex align-items-center" style="margin: 10px;">
+                        <RadzenButton Click="() => AddItem()" ButtonStyle="ButtonStyle.Light" Style="width: 150px" Text="Add" />
+                    </div>
+                    <div class="row d-flex align-items-center" style="margin: 10px">
+                        <label style="width: 120px;">Category ID</label>
+                        <label class="m-l-15" style="width: 140px;">Payee</label>
+                        <label class="m-l-15" style="width: 140px;">Date</label>
+                        @*<label class="m-l-15" style="width: 140px;">Description</label>*@
+                        <label class="m-l-15" style="width: 140px;">Amount</label>
+                        <label class="m-l-15" style="width: 140px;">Currency ID</label>
+                        <label class="m-l-15" style="width: 140px;">Currency Code</label>
+                        <label class="m-l-15" style="width: 140px;">USD Amount</label>
+                        <label class="m-l-15" style="width: 200px;">Reciept</label>
+                    </div>
+
+                    @foreach (var item in model.ExpensClaimLineItems)
+                    {
+                        <div class="row d-flex align-items-center" style="flex:1; margin: 10px">
+                            <EditForm Model="item">
+                                <RadzenNumeric @bind-Value="item.ExpenseCategoryID" Placeholder="Type a value" Style="width:120px;" />
+                                <RadzenTextBox @bind-Value="item.Payee" Placeholder="Type a value" Style="width:140px; margin-left: 10px;" />
+                                <RadzenDatePicker @bind-Value="item.Date" Placeholder="Type a value" Style="width:140px; margin-left: 10px;" />
+                                @*<RadzenTextBox @bind-Value="item.Description" Placeholder="Type a value" Style="width:140px; margin-left: 10px;" />*@
+                                <RadzenNumeric @bind-Value="item.Amount" Placeholder="Type a value" Style="width:140px;margin-left: 10px;" />
+                                <RadzenNumeric @bind-Value="item.CurrencyID" Placeholder="Type a value" Style="width:140px;margin-left: 10px;" />
+                                <RadzenTextBox @bind-Value="item.CurrencyCode" Placeholder="Type a value" Style="width:140px;margin-left: 10px;" />
+                                <RadzenNumeric @bind-Value="item.UsdAmount" Placeholder="Type a value" Style="width:140px;margin-left: 10px;" />
+                                <RadzenFileInput @bind-Value="item.Description" TValue="string"
+                                                 Change=@(args => OnChange(args, "FileInput")) Error=@(args => OnError(args, "FileInput")) />
+                            </EditForm>
+                            @*<div>
+                                    <input type="file" @ref="inputFileReference" @onchange="async () => await ChooseFileAsync()" />
+                                    @if (imageContent != string.Empty)
+                                    {
+                                        <img style="width:150px;height:150px;" src="@imageContent" />
+                                    }
+                                </div>*@
+                            <RadzenButton Click="() => RemoveItem(item)" ButtonStyle="ButtonStyle.Danger" Style="width: 150px; margin-left:20px;" Text="Delete" />
+                        </div>
+                    }
+
+                </div>
+            </RadzenCard>
+        }
+
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public int ExpenseClaimId { get; set; }
+
+    private String status = "submitted";
+
+    private System.IO.Stream fileStream = null;
+    string imageContent = string.Empty;
+    string fileName = string.Empty;
+    ElementReference inputFileReference;
+    StatusOption[] statusOptions = new StatusOption[] { new StatusOption("submitted", "Resubmit") };
+
+
+    //byte[] bytes = Convert.FromBase64String();
+
+
+    ExpenseClaim model = new ExpenseClaim();
+    //List<CreateReportRequestClaimItem> claimItems = new List<CreateReportRequestClaimItem>();
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+
+    //'data:image/jpeg;base64,/9j/2wBDAAQDAwQDAwQEAwQFBAQFBgoHBgYGBg0JCggKDw0QEA8NDw4RExgUERIXEg4PFRwVFxkZGxsbEBQdHx0aHxgaGxr/2wBDAQQFBQYFBgwHBwwaEQ8RGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhr/wAARCADjAKoDASIAAhEBAxEB/8QAHAAAAQQDAQAAAAAAAAAAAAAABAMFBgcBAggA/8QATxAAAgEDAwIEAwMHCAUICwAAAQIDBAURABIhBjETIkFRBxRhMnGRCBUjgaGx0RYkQlLB4fDxJTNicsIXGCdzg6Kz0iY1N1NjZYKFk6O0/8QAGwEAAgMBAQEAAAAAAAAAAAAAAAEEBQYCAwf/xAA0EQACAQICBggFBQEBAAAAAAAAAQIFEQMEITFxgbHBEhUkNEFSodEyM0NhchQiI0JRkfD/2gAM…MQqJyZOAMHkfQ/f+vWpq5cnaz49MLxoN5/07EgEqpHB/x7aSXDKCHHIzxrO2L+SaHBGJHf2/t0cg8jn1CEft17XteT1kuQZA7RGQxO0Z+zlGKnB4IyPprYAtGC7M5BwNzE+3vr2va7UnbWRnrPTySQpvglkiZTwUcrjt7ffrDxh3IkLON39Jy2fvz317XtdqUv9GkrBEUSgyYGMJxg499FBQRGW8x2Hljns2PX7te17XpdnmhWCNHmUFFwyLkBQM5/z0mEUQhdoKsOQRn0+vbXte0/A5WsCiVAqYjTkHPkHPlP8NL7EWMBUUDdnG0Yz769r2ncbMRkCUAKnPP2B3IGlpEXkbFxyfsj317XtdeIMFlnkEPlbH6QDgAe+h5WILAYA5Xt6a9r2vPwOlqNG/1eP/iDQ8rHY3PZcj8Ne17XEtY0BysRuwfXP7tBzMf0rZ5YgnXte1z4nXiNpdtw5PmVs/XW0bHYvPoNe17XctQ5aj//2Q=='
+    void OnChange(string value, string name)
+    {
+        //console.Log($"{name} value changed");
+    }
+
+    void OnError(UploadErrorEventArgs args, string name)
+    {
+        //console.Log($"{args.Message}");
+    }
+
+    void OnStatusChange(object value)
+    {
+        status = value.ToString();
+    }
+
+    async Task ChooseFileAsync()
+    {
+        var file = (await fileReaderService.CreateReference(inputFileReference).EnumerateFilesAsync()).FirstOrDefault();
+
+        var fileInfo = await file.ReadFileInfoAsync();
+        string extension = System.IO.Path.GetExtension(fileInfo.Name);
+        var allowedExtensions = new string[] { ".jpg", ".png", ".bmp" };
+
+        if (!allowedExtensions.Contains(extension))
+        {
+            // thie file isinvalid
+        }
+        using (var memoryStream = await file.CreateMemoryStreamAsync())
+        {
+            fileStream = new System.IO.MemoryStream(memoryStream.ToArray());
+            imageContent = $"data:{fileInfo.Type};base64, {Convert.ToBase64String(memoryStream.ToArray())}";
+        }
+    }
+
+    bool isBusy = false;
+    private void AddItem()
+    {
+        model.ExpensClaimLineItems.Add(new ExpenseClaimLineItem());
+    }
+
+    private void RemoveItem(ExpenseClaimLineItem item)
+    {
+        model.ExpensClaimLineItems.Remove(item);
+    }
+
+    async Task RemoveReport()
+    {
+        isBusy = true;
+        var userState = authenticationState.Result;
+        reportsService.AccessToken = userState.User.FindFirst("AccessToken").Value;
+        var result = await reportsService.DeleteReportAsync(model.Id);
+        if (result.Succeeded)
+        {
+
+            navigationManager.NavigateTo("/reports/quried");
+        }
+
+        isBusy = false;
+    }
+
+    async Task ReSubmitReport()
+    {
+        isBusy = true;
+
+        model.Status = status;
+        var userState = authenticationState.Result;
+        reportsService.AccessToken = userState.User.FindFirst("AccessToken").Value;
+
+
+        var result = await reportsService.UpdateReportAsync(model, model.Id);
+
+
+        if (result.Succeeded)
+        {
+
+            navigationManager.NavigateTo("/reports/submited");
+        }
+
+        isBusy = false;
+    }
+
+    async Task getReportAsync()
+    {
+        isBusy = true;
+
+        var userState = authenticationState.Result;
+        reportsService.AccessToken = userState.User.FindFirst("AccessToken").Value;
+
+        var result = await reportsService.GetReportByIdAsync(ExpenseClaimId);
+        model = result.Data;
+        isBusy = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await getReportAsync();
+    }
+
+
+}

@@ -28,9 +28,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreManager.Infrastructure.Shared", "StoreManager.Infrastructure.Shared\StoreManager.Infrastructure.Shared.csproj", "{7E62A300-1001-4F7D-9E25-C3CE55BFFBBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreManager.ExpenseReport", "StoreManager.ExpenseReport\StoreManager.ExpenseReport.csproj", "{CF0E2C27-8DC5-46E8-ACE9-2B3A1EC16ECF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreManager.ExpenseReport", "StoreManager.ExpenseReport\StoreManager.ExpenseReport.csproj", "{CF0E2C27-8DC5-46E8-ACE9-2B3A1EC16ECF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreManager.Shared", "StoreManager.Shared\StoreManager.Shared.csproj", "{C8BACF83-CDEA-4DED-837C-A5C4F4A3D4EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreManager.Shared", "StoreManager.Shared\StoreManager.Shared.csproj", "{C8BACF83-CDEA-4DED-837C-A5C4F4A3D4EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
